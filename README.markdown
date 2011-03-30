@@ -1,5 +1,5 @@
 # Overview
-moinmoin-client-crypt provides client-side encryption/decryption of MoinMoin wiki pages (or portions thereof). It adds encrypt/decrypt buttons to the edit screen, providing an easy mechanism to secure all or a portion of the content. Encryption is via Chris Veness' Javascript AES implementation (256 bit key, CTR mode).
+__moinmoin-client-crypt provides client-side encryption/decryption of MoinMoin wiki pages (or portions thereof). It adds encrypt/decrypt buttons to the edit screen, providing an easy mechanism to secure all or a portion of the content.__ Encryption is via Chris Veness' Javascript AES implementation (256 bit key, CTR mode).
 
 Installation involves dropping a couple JavaScript files into the appropriate MoinMoin directory and tweaking the theme init file to reference them. Full functionality with modern and classic themes, perhaps slightly degraded on others. It shouldn't take much tweaking to adapt to other themes; patches and bug reports are welcome!
 
@@ -7,8 +7,8 @@ The client-side JavaScript approach provides some security if the server were to
 you have to trust your client machine, your browser, your connection to the server, and the integrity of the server, as explained [here](http://rdist.root.org/2010/11/29/final-post-on-javascript-crypto/ "Final post on Javascript crypto") by Nate Lawson. The need for client-side security should be obvious; the server and connection must be trusted not to send/inject a modified version of the script.
 
 # Installation
-1. Place crypt directory into htdocs/common/js (e.g. /usr/share/moin/htdocs/common/js/crypt)
-2. Update the html_head function (around line 900) in __init__.py (e.g. /usr/share/pyshared/MoinMoin/theme/__init__.py) to reference all the js files:
+1. Place crypt directory into `htdocs/common/js` (e.g. `/usr/share/moin/htdocs/common/js/crypt`)
+2. Update the `html_head` function (around line 900) in `__init__.py` (e.g. `/usr/share/pyshared/MoinMoin/theme/__init__.py`) to reference all the js files:
             self.externalScript('crypt/base64'),
             self.externalScript('crypt/utf8'),
             self.externalScript('crypt/aes'),
