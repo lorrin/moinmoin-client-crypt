@@ -73,6 +73,14 @@ function setupCryptUI() {
   passwordField.setAttribute("type", "password");
   passwordField.setAttribute("size", "50");
   passwordField.setAttribute("id", "field_password");
+  //Ugh. Fine if user wants their browser to remember passwords. But want to
+  //avoid remembering contents without prompting (and less security) as just
+  //a form field. This seems liable to happen
+  //when Show checkbox is used despite all the submission handlers setting the
+  //type back to password before proceeding.
+  passwordField.setAttribute("autocomplete", "off");
+  //some browsers are confused and expect autocomplete on the form rather than the field
+  form.setAttribute("autocomplete", "off");
   fieldSet.prepend(passwordField);
 
   fieldSet.prependText("Password: ");
