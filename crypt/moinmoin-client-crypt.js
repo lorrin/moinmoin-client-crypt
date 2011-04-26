@@ -31,11 +31,9 @@ function setupCryptUI() {
   }
   var fieldSet = form.elements[0];
   for (i = 0; i < form.elements.length; i++) {
-    if (form.elements[i].getAttribute("name") == "button_save") {
-      form.elements[i].setAttribute("id","button_save");
-    }
-    else if (form.elements[i].getAttribute("name") == "button_preview") {
-      form.elements[i].setAttribute("id","button_preview");
+    var name = form.elements[i].getAttribute("name");
+    if (name == "button_save" || name == "button_preview" || name == "button_cancel" || name == "button_spellcheck" ) {
+      form.elements[i].setAttribute("id",name);
     }
   }
   fieldSet.prepend = formPrepend;
@@ -106,6 +104,7 @@ var decryptedSnippet=/PLAIN\(([^\)]*)\)/;
 var encryptedDoc=/----- ENCRYPTED -----\n.*\n---------------------/;
 
 function encryptSnippet(plainText) {
+  var field_password = document.getElementById("field_password");
   return "ENC(" + Aes.Ctr.encrypt(plainText, field_password.value, 256) + ")";
 }
 function encrypt() {
@@ -126,6 +125,7 @@ function encrypt() {
   cryptState();
 }
 function decryptSnippet(cipherText) {
+  var field_password = document.getElementById("field_password");
   return "PLAIN(" + Aes.Ctr.decrypt(cipherText, field_password.value, 256) + ")";
 }
 function decrypt() {
@@ -146,38 +146,44 @@ function cryptState() {
   var button_save = document.getElementById("button_save");
   var button_preview = document.getElementById("button_preview");
   var button_change = document.getElementById("button_change");
+  var button_spell = document.getElementById("button_spellcheck");
+  var button_cancel = document.getElementById("button_cancel");
   var field_password = document.getElementById("field_password");
+
+  var contains_decrypted_plaintext;
   if (encryptedSnippet.test(doc.value) || encryptedDoc.test(doc.value)) {
+    contains_decrypted_plaintext = false;
     button_crypt.setAttribute("value","Decrypt");
     button_crypt.setAttribute("onclick","decrypt()");
-    button_save.setAttribute("value","Save Changes");
-    button_save.setAttribute("onclick","passwordAndBoxVisibility(false); flgChange = false;");
-    field_password.removeAttribute("disabled");
-    button_preview.setAttribute("disabled","true");
-    button_preview.setAttribute("onclick","flgChange = false;");
-    button_change.setAttribute("disabled","true");
-    button_change.removeAttribute("onclick");
   }
-  else if (field_password.value.length > 0) {
+  else {
     button_crypt.setAttribute("value","Encrypt");
     button_crypt.setAttribute("onclick","encrypt()");
+    contains_decrypted_plaintext = (field_password.value.length > 0);
+  }
+
+  if (contains_decrypted_plaintext) {
+    button_change.removeAttribute("disabled");
+    button_change.setAttribute("onclick", "document.getElementById('field_password').removeAttribute('disabled')");
     button_save.setAttribute("value","Encrypt & Save Changes");
     button_save.setAttribute("onclick","passwordAndBoxVisibility(false); encrypt(); flgChange = false;");
     field_password.setAttribute("disabled","true");
     button_preview.setAttribute("disabled","true");
     button_preview.removeAttribute("onclick");
-    button_change.removeAttribute("disabled");
-    button_change.setAttribute("onclick", "document.getElementById('field_password').removeAttribute('disabled')");
-  } else {
-    button_crypt.setAttribute("value","Encrypt");
-    button_crypt.setAttribute("onclick","encrypt()");
+    button_spell.setAttribute("disabled","true");
+    button_cancel.setAttribute("onclick","encrypt()");
+  }
+  else {
+    button_change.setAttribute("disabled","true");
+    button_change.removeAttribute("onclick");
     button_save.setAttribute("value","Save Changes");
     button_save.setAttribute("onclick","passwordAndBoxVisibility(false); flgChange = false;");
     field_password.removeAttribute("disabled");
     button_preview.removeAttribute("disabled");
     button_preview.setAttribute("onclick","flgChange = false;");
-    button_change.setAttribute("disabled","true");
-    button_change.removeAttribute("onclick");
+    button_spell.removeAttribute("disabled");
+    button_cancel.removeAttribute("onclick");
   }
+
 }
 window.onload = setupCryptUI;
