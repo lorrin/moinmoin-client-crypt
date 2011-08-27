@@ -4,7 +4,7 @@ __moinmoin-client-crypt provides client-side encryption/decryption of MoinMoin w
 
 Installation involves dropping a couple JavaScript files into the appropriate MoinMoin directory and tweaking the theme init file to reference them.
 
-![Screenshot](raw/master/screenshot.png)
+![Screenshot](moinmoin-client-crypt/raw/master/screenshot.png)
 
 ## Installation
 1. Place crypt directory into `htdocs/common/js` (e.g. `/usr/share/moin/htdocs/common/js/crypt`)
