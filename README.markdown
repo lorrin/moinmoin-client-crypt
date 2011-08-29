@@ -1,14 +1,18 @@
 # client-side cryptography for MoinMoin
 ## Overview
-__moinmoin-client-crypt provides client-side encryption/decryption of MoinMoin wiki pages (or portions thereof).__ It adds encrypt/decrypt buttons to the edit screen, providing an easy mechanism to secure all or a portion of the content. Encryption is don via [Chris Veness' Javascript AES implementation](http://www.movable-type.co.uk/scripts/aes.html) (256 bit key, CTR mode).
+__moinmoin-client-crypt provides client-side encryption/decryption of MoinMoin wiki pages (or portions thereof).__ It adds encrypt/decrypt buttons to the edit screen, providing an easy mechanism to secure all or a portion of the content. Encryption is done via [Chris Veness' Javascript AES implementation](http://www.movable-type.co.uk/scripts/aes.html) (256 bit key, CTR mode).
 
 Installation involves dropping a couple JavaScript files into the appropriate MoinMoin directory and tweaking the theme init file to reference them.
 
 ![Screenshot](moinmoin-client-crypt/raw/master/screenshot.png)
 
 ## Installation
-1. Place crypt directory into `htdocs/common/js` (e.g. `/usr/share/moin/htdocs/common/js/crypt`)
-2. Update the `html_head` function (around line 900) in `__init__.py` (e.g. `/usr/share/pyshared/MoinMoin/theme/__init__.py`) to reference all the js files:
+1. Place crypt directory into `htdocs/common/js`
+  * Debian/Ubuntu: `/usr/share/moin/htdocs/common/js/crypt`
+  * Desktop Edition: `./MoinMoin/web/static/htdocs/common/js/crypt`
+2. Update `__init__.py` to reference all the moinmoin-client-crypt js files. In the `html_head` function (around line 900) find the `externalScript` invocation and add the following additional ones. Remember, Python requires consistent indentation!
+  * Debian/Ubuntu: `/usr/share/pyshared/MoinMoin/theme/__init__.py`
+  * Desktop Edition: `./MoinMoin/theme/__init__.py`
 
   ```python
 self.externalScript('crypt/base64'),
@@ -18,8 +22,8 @@ self.externalScript('crypt/aes-ctr'),
 self.externalScript('crypt/moinmoin-client-crypt'),
 ```
 
-### Themes
- Full functionality with modern and classic themes, perhaps slightly degraded on others. It shouldn't take much tweaking to adapt to other themes; patches and bug reports are welcome!
+### Theme Compatibility
+ moinmoin-client-crypt has full functionality with *modern* and *classic* themes. Perhaps slightly degraded on others. It shouldn't take much tweaking to adapt to other themes; patches and bug reports are welcome!
 
 ## Usage
 ### Encryption
