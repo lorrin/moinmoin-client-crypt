@@ -105,7 +105,7 @@ var encryptedDoc=/----- ENCRYPTED -----\n.*\n---------------------/;
 
 function encryptSnippet(plainText) {
   var field_password = document.getElementById("field_password");
-  return "ENC(" + Aes.Ctr.encrypt(plainText, field_password.value, 256) + ")";
+  return "ENC(" + Aes.Ctr.encrypt("CLEAN" + plainText, field_password.value, 256) + ")";
 }
 function encrypt() {
   var field_password = document.getElementById("field_password");
@@ -118,21 +118,45 @@ function encrypt() {
     if (decryptedSnippet.test(doc.value)) {
       doc.value = applyToRegexMatch(encryptSnippet, doc.value, decryptedSnippet);
     } else {
-      doc.value = "----- ENCRYPTED -----\n" + Aes.Ctr.encrypt(doc.value, field_password.value, 256) + "\n---------------------";
+      doc.value = "----- ENCRYPTED -----\n" + Aes.Ctr.encrypt("CLEAN"+doc.value, field_password.value, 256) + "\n---------------------";
     }
   }
   passwordAndBoxVisibility(false);
   cryptState();
 }
+function decryptWithCorrectnessHeuristics(cipherText) {
+    var decrypted = Aes.Ctr.decrypt(cipherText, field_password.value, 256);
+    var charsToCheck = Math.min(decrypted.lengh, 10);
+    if (decrypted.slice(0,5) == "CLEAN") { //new text marks cleartext explicitly so we know password was correct
+        return decrypted.slice(5);
+    } else if (decrypted.match(/^[ -~]{5}/)) { //legacy text. Assume clean if starts with printable ASCII
+        return decrypted;
+    } else {
+        var retry = confirm("Bad password? OK to re-enter, Cancel to proceed with suspect plaintext.");
+        if (retry) {
+            return null;
+        } else {
+            return decrypted;
+        }
+    }
+}
 function decryptSnippet(cipherText) {
   var field_password = document.getElementById("field_password");
-  return "PLAIN(" + Aes.Ctr.decrypt(cipherText, field_password.value, 256) + ")";
+  var decrypted = decryptWithCorrectnessHeuristics(cipherText);
+  if (decrypted) {
+      return "PLAIN(" + decrypted + ")";
+  } else {
+      return "ENC("+cipherText+")";
+  }
 }
 function decrypt() {
   var doc = document.getElementById("editor-textarea");
   var field_password = document.getElementById("field_password");
   if (encryptedDoc.test(doc.value)) {
-    doc.value = Aes.Ctr.decrypt(doc.value.substring(doc.value.indexOf("----- ENCRYPTED -----\n")+22,doc.value.indexOf("\n---------------------")), field_password.value, 256);
+    var decrypted = decryptWithCorrectnessHeuristics(doc.value.substring(doc.value.indexOf("----- ENCRYPTED -----\n")+22,doc.value.indexOf("\n---------------------")));
+    if (decrypted) {
+        doc.value = decrypted;
+    }
   } else {
     doc.value = applyToRegexMatch(decryptSnippet, doc.value, encryptedSnippet);
   }
