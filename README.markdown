@@ -11,7 +11,8 @@ Installation involves dropping a couple JavaScript files into the appropriate Mo
   * Debian/Ubuntu: `/usr/share/moin/htdocs/common/js/crypt`
   * Desktop Edition: `./MoinMoin/web/static/htdocs/common/js/crypt`
 2. Update `__init__.py` to reference all the moinmoin-client-crypt js files. In the `html_head` function (around line 900) find the `externalScript` invocation and add the following additional ones. Remember, Python requires consistent indentation!
-  * Debian/Ubuntu: `/usr/share/pyshared/MoinMoin/theme/__init__.py`
+  * Debian/Ubuntu (wheezy / 14.04 and newer): `/usr/lib/python2.7/dist-packages/MoinMoin/theme/__init__.py`
+  * Debian/Ubuntu (squeeze / 13.10 and older): `/usr/share/pyshared/MoinMoin/theme/__init__.py`
   * Desktop Edition: `./MoinMoin/theme/__init__.py`
 
   ```python
